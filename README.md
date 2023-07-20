@@ -136,7 +136,7 @@ terraform fmt
 | <a name="output_eks_cluster_name"></a> [eks\_cluster\_name](#output\_eks\_cluster\_name) | EKS cluster name. |
 | <a name="output_eks_cluster_version"></a> [eks\_cluster\_version](#output\_eks\_cluster\_version) | EKS cluster version. |
 | <a name="output_eks_oidc_issuer_url"></a> [eks\_oidc\_issuer\_url](#output\_eks\_oidc\_issuer\_url) | EKS cluster OIDC issuer URL. |
-| <a name="output_worker_node_role"></a> [worker\_node\_role](#output\_worker\_node\_role) | EKS node group role. |
-| <a name="output_worker_sg"></a> [worker\_sg](#output\_worker\_sg) | EKS node group security group. |
+| <a name="output_eks_worker_node_role"></a> [eks\_worker\_node\_role](#output\_eks\_worker\_node\_role) | EKS node group role. |
+| <a name="output_eks_worker_sg"></a> [eks\_worker\_sg](#output\_eks\_worker\_sg) | EKS node group security group. |
 
 
