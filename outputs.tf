@@ -23,12 +23,12 @@ output "eks_cluster_version" {
   description = "EKS cluster version."
 }
 
-output "worker_node_role" {
+output "eks_worker_node_role" {
   value = aws_iam_role.eks_worker.arn
   description = "EKS node group role."
 }
 
-output "worker_sg" {
+output "eks_worker_sg" {
   value = aws_security_group.eks_sg.id
   description = "EKS node group security group."
 }
