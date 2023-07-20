@@ -131,11 +131,12 @@ terraform fmt
 
 | Name | Description |
 |------|-------------|
-| <a name="output_cluster_name"></a> [cluster\_name](#output\_cluster\_name) | n/a |
-| <a name="output_eks_cluster_ca_base64"></a> [eks\_cluster\_ca\_base64](#output\_eks\_cluster\_ca\_base64) | n/a |
-| <a name="output_eks_cluster_endpoint"></a> [eks\_cluster\_endpoint](#output\_eks\_cluster\_endpoint) | n/a |
-| <a name="output_eks_oidc_issuer_url"></a> [eks\_oidc\_issuer\_url](#output\_eks\_oidc\_issuer\_url) | n/a |
-| <a name="output_worker_node_role"></a> [worker\_node\_role](#output\_worker\_node\_role) | n/a |
-| <a name="output_worker_sg"></a> [worker\_sg](#output\_worker\_sg) | n/a |
+| <a name="output_eks_cluster_ca_base64"></a> [eks\_cluster\_ca\_base64](#output\_eks\_cluster\_ca\_base64) | EKS cluster CA in base64 format. |
+| <a name="output_eks_cluster_endpoint"></a> [eks\_cluster\_endpoint](#output\_eks\_cluster\_endpoint) | EKS cluster endpoint. |
+| <a name="output_eks_cluster_name"></a> [eks\_cluster\_name](#output\_eks\_cluster\_name) | EKS cluster name. |
+| <a name="output_eks_cluster_version"></a> [eks\_cluster\_version](#output\_eks\_cluster\_version) | EKS cluster version. |
+| <a name="output_eks_oidc_issuer_url"></a> [eks\_oidc\_issuer\_url](#output\_eks\_oidc\_issuer\_url) | EKS cluster OIDC issuer URL. |
+| <a name="output_worker_node_role"></a> [worker\_node\_role](#output\_worker\_node\_role) | EKS node group role. |
+| <a name="output_worker_sg"></a> [worker\_sg](#output\_worker\_sg) | EKS node group security group. |
 
 
