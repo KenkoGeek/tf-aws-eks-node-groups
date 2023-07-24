@@ -39,10 +39,10 @@ terraform fmt
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 5.3.0 |
-| <a name="provider_helm"></a> [helm](#provider\_helm) | 2.10.1 |
-| <a name="provider_http"></a> [http](#provider\_http) | 2.4.1 |
-| <a name="provider_kubectl"></a> [kubectl](#provider\_kubectl) | 1.14.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | ~> 5.3.0 |
+| <a name="provider_helm"></a> [helm](#provider\_helm) | ~> 2.10.1 |
+| <a name="provider_http"></a> [http](#provider\_http) | ~> 3.4.0 |
+| <a name="provider_kubectl"></a> [kubectl](#provider\_kubectl) | >= 1.7.0 |
 
 ## Requirements
 
@@ -69,6 +69,7 @@ terraform fmt
 
 | Name | Type |
 |------|------|
+| [aws_ebs_encryption_by_default.enabled](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ebs_encryption_by_default) | resource |
 | [aws_ec2_tag.eks_cluster_subnet](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ec2_tag) | resource |
 | [aws_ec2_tag.internal_alb_subnet](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ec2_tag) | resource |
 | [aws_ec2_tag.karpenter_discovery_subnet](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ec2_tag) | resource |
@@ -82,11 +83,13 @@ terraform fmt
 | [aws_iam_role.eks_worker](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
 | [aws_iam_role_policy.karpenter_controller](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy) | resource |
 | [aws_kms_alias.kms_alias](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/kms_alias) | resource |
-| [aws_kms_key.cmk](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/kms_key) | resource |
+| [aws_kms_key.logs_cmk](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/kms_key) | resource |
 | [aws_security_group.eks_sg](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group) | resource |
 | [helm_release.karpenter](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
 | [kubectl_manifest.karpenter_provisioner](https://registry.terraform.io/providers/gavinbunney/kubectl/latest/docs/resources/manifest) | resource |
 | [aws_caller_identity.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/caller_identity) | data source |
+| [aws_ebs_default_kms_key.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ebs_default_kms_key) | data source |
+| [aws_iam_policy_document.k8s_secrets_logs_kms_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_vpc.main](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/vpc) | data source |
 | [http_http.lbc_iam_policy](https://registry.terraform.io/providers/hashicorp/http/latest/docs/data-sources/http) | data source |
 
@@ -108,9 +111,9 @@ terraform fmt
 | <a name="input_enable_schedules"></a> [enable\_schedules](#input\_enable\_schedules) | Enable schedules to scale down and scale up at days and hours | `bool` | `true` | no |
 | <a name="input_instance_type"></a> [instance\_type](#input\_instance\_type) | EC2 instance type | `list(string)` | <pre>[<br>  "t3.small",<br>  "t3.medium"<br>]</pre> | no |
 | <a name="input_karpenter_helm_chart_version"></a> [karpenter\_helm\_chart\_version](#input\_karpenter\_helm\_chart\_version) | Version of the ALB controller Helm chart, for more info -> https://artifacthub.io/packages/helm/karpenter/karpenter | `string` | `"0.16.3"` | no |
-| <a name="input_kms_key_arn"></a> [kms\_key\_arn](#input\_kms\_key\_arn) | KMS key ARN for encryption | `string` | `"arn:aws:kms:us-east-1:123456789012:key/e589fe53-4af7-b084-dad1-331b80f17860"` | no |
 | <a name="input_kube_prometheus_stack"></a> [kube\_prometheus\_stack](#input\_kube\_prometheus\_stack) | Prometheus stack for k8s https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack | `bool` | `false` | no |
 | <a name="input_kubernetes_version"></a> [kubernetes\_version](#input\_kubernetes\_version) | Version of Kubernetes | `string` | `"1.27"` | no |
+| <a name="input_logs_kms_key_arn"></a> [logs\_kms\_key\_arn](#input\_logs\_kms\_key\_arn) | KMS key ARN for logs and k8s secrets encryption | `string` | `"arn:aws:kms:us-east-1:123456789012:key/e589fe53-4af7-b084-dad1-331b80f17860"` | no |
 | <a name="input_max_size"></a> [max\_size](#input\_max\_size) | Max instances running for managed node group | `number` | `4` | no |
 | <a name="input_metrics_server"></a> [metrics\_server](#input\_metrics\_server) | Enable Metric\_server for k8s cluster. | `bool` | `false` | no |
 | <a name="input_min_size"></a> [min\_size](#input\_min\_size) | Minimun instances running for managed node group | `number` | `2` | no |

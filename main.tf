@@ -23,94 +23,28 @@ resource "aws_ec2_tag" "internal_alb_subnet" {
 }
 
 # KMS for secrets and logs
-data "aws_caller_identity" "current" {}
-
-resource "aws_kms_key" "cmk" {
+resource "aws_kms_key" "logs_cmk" {
+  count                   = var.logs_kms_key_arn == "" ? 1 : 0
   description             = "KMS key for k8s secrets and logs"
   key_usage               = "ENCRYPT_DECRYPT"
   deletion_window_in_days = 7
   enable_key_rotation     = true
   multi_region            = true
   tags                    = var.tags
-
-  policy = jsonencode({
-    "Version" : "2012-10-17",
-    "Id" : "key-policy-k8s-secrets}",
-    "Statement" : [
-      {
-        "Sid" : "Enable IAM root User Permissions",
-        "Effect" : "Allow",
-        "Principal" : {
-          "AWS" : "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"
-        },
-        "Action" : "kms:*",
-        "Resource" : "*"
-      },
-      {
-        "Sid" : "Key administrator",
-        "Effect" : "Allow",
-        "Principal" : {
-          "AWS" : data.aws_caller_identity.current.arn
-        },
-        "Action" : [
-          "kms:Encrypt",
-          "kms:Decrypt",
-          "kms:ReEncrypt*",
-          "kms:GenerateDataKey*",
-          "kms:CreateGrant",
-          "kms:ListGrants",
-          "kms:DescribeKey"
-        ],
-        "Resource" : "*"
-      },
-      {
-        "Sid" : "AllowUseForWorker",
-        "Effect" : "Allow",
-        "Principal" : {
-          "AWS" : aws_iam_role.eks_worker.arn
-        },
-        "Action" : [
-          "kms:Encrypt*",
-          "kms:Decrypt*",
-          "kms:ReEncrypt*",
-          "kms:GenerateDataKey*",
-          "kms:Describe*"
-        ],
-        "Resource" : "*"
-      },
-      {
-        "Sid" : "AllowUseForCloudWatchLogs",
-        "Effect" : "Allow",
-        "Principal" : {
-          "Service" : "logs.${var.aws_region}.amazonaws.com"
-        },
-        "Action" : [
-          "kms:Encrypt*",
-          "kms:Decrypt*",
-          "kms:ReEncrypt*",
-          "kms:GenerateDataKey*",
-          "kms:Describe*"
-        ],
-        "Resource" : "*"
-      }
-    ]
-  })
+  policy                  = data.aws_iam_policy_document.k8s_secrets_logs_kms_policy.json
 }
 
 resource "aws_kms_alias" "kms_alias" {
+  count         = var.logs_kms_key_arn == "" ? 1 : 0
   name          = "alias/${var.project_name}-cluster"
-  target_key_id = aws_kms_key.cmk.key_id
+  target_key_id = aws_kms_key.logs_cmk.arn
+}
+
+resource "aws_ebs_encryption_by_default" "enabled" {
+  enabled = true
 }
 
 # ALB controller policy
-data "http" "lbc_iam_policy" {
-  url = "https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/${var.alb_controller_version}/docs/install/iam_policy.json"
-
-  request_headers = {
-    Accept = "application/json"
-  }
-}
-
 resource "aws_iam_policy" "alb_controller_policy" {
   name   = "AWSLoadBalancerControllerIAMPolicy"
   policy = data.http.lbc_iam_policy.response_body
@@ -118,10 +52,6 @@ resource "aws_iam_policy" "alb_controller_policy" {
 }
 
 # Extra SG
-data "aws_vpc" "main" {
-  id = var.vpc_id
-}
-
 resource "aws_security_group" "eks_sg" {
   name        = "${var.project_name}-eks-cluster-sg"
   description = "Security group for ${var.project_name} EKS cluster/nodes"
@@ -284,7 +214,7 @@ module "eks_managed_node_group" {
         iops                  = 3000
         throughput            = 150
         encrypted             = true
-        kms_key_id            = var.kms_key_arn
+        kms_key_id            = data.aws_ebs_default_kms_key.current.key_arn
         delete_on_termination = true
       }
     }

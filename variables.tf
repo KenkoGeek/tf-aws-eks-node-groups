@@ -146,13 +146,13 @@ variable "disk_size" {
   }
 }
 
-variable "kms_key_arn" {
-  description = "KMS key ARN for encryption"
+variable "logs_kms_key_arn" {
+  description = "KMS key ARN for logs and k8s secrets encryption"
   type        = string
   default     = "arn:aws:kms:us-east-1:123456789012:key/e589fe53-4af7-b084-dad1-331b80f17860"
 
   validation {
-    condition     = var.kms_key_arn == "" || can(regex("^arn:aws:kms:.*", var.kms_key_arn))
+    condition     = var.logs_kms_key_arn == "" || can(regex("^arn:aws:kms:.*", var.logs_kms_key_arn))
     error_message = "Invalid KMS key ARN. Please provide a valid ARN or leave it empty."
   }
 }
