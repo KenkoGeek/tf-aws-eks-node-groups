@@ -62,12 +62,6 @@ variable "cloudwatch_metrics" {
   default     = false
 }
 
-variable "efs_csi" {
-  description = "Enable Amazon EFS CSI Driver"
-  type        = bool
-  default     = false
-}
-
 variable "api_gw_controller" {
   description = "Enable AWS API Gatway controller."
   type        = bool
@@ -143,17 +137,6 @@ variable "disk_size" {
   validation {
     condition     = can(var.disk_size >= 8 && var.disk_size <= 64000)
     error_message = "Size must be in number between 8 and 64000 (GB)."
-  }
-}
-
-variable "logs_kms_key_arn" {
-  description = "KMS key ARN for logs and k8s secrets encryption"
-  type        = string
-  default     = "arn:aws:kms:us-east-1:123456789012:key/e589fe53-4af7-b084-dad1-331b80f17860"
-
-  validation {
-    condition     = var.logs_kms_key_arn == "" || can(regex("^arn:aws:kms:.*", var.logs_kms_key_arn))
-    error_message = "Invalid KMS key ARN. Please provide a valid ARN or leave it empty."
   }
 }
 

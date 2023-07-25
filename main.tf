@@ -24,7 +24,6 @@ resource "aws_ec2_tag" "internal_alb_subnet" {
 
 # KMS for secrets and logs
 resource "aws_kms_key" "logs_cmk" {
-  count                   = var.logs_kms_key_arn == "" ? 1 : 0
   description             = "KMS key for k8s secrets and logs"
   key_usage               = "ENCRYPT_DECRYPT"
   deletion_window_in_days = 7
@@ -35,7 +34,6 @@ resource "aws_kms_key" "logs_cmk" {
 }
 
 resource "aws_kms_alias" "kms_alias" {
-  count         = var.logs_kms_key_arn == "" ? 1 : 0
   name          = "alias/${var.project_name}-cluster"
   target_key_id = aws_kms_key.logs_cmk.arn
 }
@@ -139,7 +137,7 @@ resource "aws_iam_policy_attachment" "ssm" {
 
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "17.24.0"
+  version = "~> 17.24.0"
 
   map_roles = concat(
     [
@@ -163,7 +161,7 @@ module "eks" {
   vpc_id                          = var.vpc_id
   subnets                         = var.subnet_ids
   cluster_endpoint_private_access = var.private_access
-  cluster_endpoint_public_access  = var.public_access
+  cluster_endpoint_public_access  = var.public_access #tfsec:ignore:aws-eks-no-public-cluster-access
   enable_irsa                     = true
 
   cluster_enabled_log_types = [
@@ -174,12 +172,12 @@ module "eks" {
     "scheduler"
   ]
 
-  cluster_log_kms_key_id        = aws_kms_key.cmk.arn
+  cluster_log_kms_key_id        = aws_kms_key.logs_cmk.arn
   cluster_log_retention_in_days = 90
 
   cluster_encryption_config = [
     {
-      provider_key_arn = aws_kms_key.cmk.arn
+      provider_key_arn = aws_kms_key.logs_cmk.arn
       resources        = ["secrets"]
 
     }
@@ -189,7 +187,8 @@ module "eks" {
 
 # EKS Manage node group
 module "eks_managed_node_group" {
-  source = "terraform-aws-modules/eks/aws//modules/eks-managed-node-group"
+  source  = "terraform-aws-modules/eks/aws//modules/eks-managed-node-group"
+  version = "~> 19.15.3"
 
   name                              = "${var.project_name}-eks-worker"
   cluster_name                      = module.eks.cluster_id
@@ -222,7 +221,7 @@ module "eks_managed_node_group" {
 
   metadata_options = {
     http_endpoint               = "enabled"
-    http_tokens                 = "optional"
+    http_tokens                 = "required"
     http_put_response_hop_limit = 2
     instance_metadata_tags      = "enabled"
   }
@@ -319,61 +318,9 @@ module "iam_assumable_role_karpenter" {
 }
 
 resource "aws_iam_role_policy" "karpenter_controller" {
-  name = "karpenter-policy-${var.project_name}"
-  role = module.iam_assumable_role_karpenter.iam_role_name
-  policy = jsonencode(
-    {
-      "Statement" : [
-        {
-          "Action" : [
-            "ssm:GetParameter",
-            "ec2:DescribeImages",
-            "ec2:RunInstances",
-            "ec2:DescribeSubnets",
-            "ec2:DescribeSecurityGroups",
-            "ec2:DescribeLaunchTemplates",
-            "ec2:DescribeInstances",
-            "ec2:DescribeInstanceTypes",
-            "ec2:DescribeInstanceTypeOfferings",
-            "ec2:DescribeAvailabilityZones",
-            "ec2:DeleteLaunchTemplate",
-            "ec2:CreateTags",
-            "ec2:CreateLaunchTemplate",
-            "ec2:CreateFleet",
-            "ec2:DescribeSpotPriceHistory",
-            "pricing:GetProducts"
-          ],
-          "Effect" : "Allow",
-          "Resource" : "*",
-          "Sid" : "Karpenter"
-        },
-        {
-          "Action" : "ec2:TerminateInstances",
-          "Condition" : {
-            "StringLike" : {
-              "ec2:ResourceTag/karpenter.sh/provisioner-name" : "*"
-            }
-          },
-          "Effect" : "Allow",
-          "Resource" : "*",
-          "Sid" : "ConditionalEC2Termination"
-        },
-        {
-          "Effect" : "Allow",
-          "Action" : "iam:PassRole",
-          "Resource" : "*",
-          "Sid" : "PassNodeIAMRole"
-        },
-        {
-          "Effect" : "Allow",
-          "Action" : "eks:DescribeCluster",
-          "Resource" : module.eks.cluster_arn,
-          "Sid" : "EKSClusterEndpointLookup"
-        }
-      ],
-      "Version" : "2012-10-17"
-    }
-  )
+  name   = "karpenter-policy-${var.project_name}"
+  role   = module.iam_assumable_role_karpenter.iam_role_name
+  policy = data.aws_iam_policy_document.karpenter_policy.json
 }
 
 resource "helm_release" "karpenter" {

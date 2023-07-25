@@ -39,10 +39,10 @@ terraform fmt
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | ~> 5.3.0 |
-| <a name="provider_helm"></a> [helm](#provider\_helm) | ~> 2.10.1 |
-| <a name="provider_http"></a> [http](#provider\_http) | ~> 3.4.0 |
-| <a name="provider_kubectl"></a> [kubectl](#provider\_kubectl) | >= 1.7.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 5.3.0 |
+| <a name="provider_helm"></a> [helm](#provider\_helm) | 2.10.1 |
+| <a name="provider_http"></a> [http](#provider\_http) | 2.4.1 |
+| <a name="provider_kubectl"></a> [kubectl](#provider\_kubectl) | 1.14.0 |
 
 ## Requirements
 
@@ -60,9 +60,9 @@ terraform fmt
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_eks"></a> [eks](#module\_eks) | terraform-aws-modules/eks/aws | 17.24.0 |
+| <a name="module_eks"></a> [eks](#module\_eks) | terraform-aws-modules/eks/aws | ~> 17.24.0 |
 | <a name="module_eks_blueprints_addons"></a> [eks\_blueprints\_addons](#module\_eks\_blueprints\_addons) | aws-ia/eks-blueprints-addons/aws | ~> 1.2.2 |
-| <a name="module_eks_managed_node_group"></a> [eks\_managed\_node\_group](#module\_eks\_managed\_node\_group) | terraform-aws-modules/eks/aws//modules/eks-managed-node-group | n/a |
+| <a name="module_eks_managed_node_group"></a> [eks\_managed\_node\_group](#module\_eks\_managed\_node\_group) | terraform-aws-modules/eks/aws//modules/eks-managed-node-group | ~> 19.15.3 |
 | <a name="module_iam_assumable_role_karpenter"></a> [iam\_assumable\_role\_karpenter](#module\_iam\_assumable\_role\_karpenter) | terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc | 5.27.0 |
 
 ## Resources
@@ -90,6 +90,7 @@ terraform fmt
 | [aws_caller_identity.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/caller_identity) | data source |
 | [aws_ebs_default_kms_key.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ebs_default_kms_key) | data source |
 | [aws_iam_policy_document.k8s_secrets_logs_kms_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
+| [aws_iam_policy_document.karpenter_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_vpc.main](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/vpc) | data source |
 | [http_http.lbc_iam_policy](https://registry.terraform.io/providers/hashicorp/http/latest/docs/data-sources/http) | data source |
 
@@ -107,13 +108,11 @@ terraform fmt
 | <a name="input_cloudwatch_metrics"></a> [cloudwatch\_metrics](#input\_cloudwatch\_metrics) | Enable AWS Cloudwatch Metrics. metric\_server must be true. | `bool` | `false` | no |
 | <a name="input_desired_size"></a> [desired\_size](#input\_desired\_size) | Desired instances running at the same time for managed node group | `number` | `2` | no |
 | <a name="input_disk_size"></a> [disk\_size](#input\_disk\_size) | EC2 disk size | `number` | `30` | no |
-| <a name="input_efs_csi"></a> [efs\_csi](#input\_efs\_csi) | Enable Amazon EFS CSI Driver | `bool` | `false` | no |
 | <a name="input_enable_schedules"></a> [enable\_schedules](#input\_enable\_schedules) | Enable schedules to scale down and scale up at days and hours | `bool` | `true` | no |
 | <a name="input_instance_type"></a> [instance\_type](#input\_instance\_type) | EC2 instance type | `list(string)` | <pre>[<br>  "t3.small",<br>  "t3.medium"<br>]</pre> | no |
 | <a name="input_karpenter_helm_chart_version"></a> [karpenter\_helm\_chart\_version](#input\_karpenter\_helm\_chart\_version) | Version of the ALB controller Helm chart, for more info -> https://artifacthub.io/packages/helm/karpenter/karpenter | `string` | `"0.16.3"` | no |
 | <a name="input_kube_prometheus_stack"></a> [kube\_prometheus\_stack](#input\_kube\_prometheus\_stack) | Prometheus stack for k8s https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack | `bool` | `false` | no |
 | <a name="input_kubernetes_version"></a> [kubernetes\_version](#input\_kubernetes\_version) | Version of Kubernetes | `string` | `"1.27"` | no |
-| <a name="input_logs_kms_key_arn"></a> [logs\_kms\_key\_arn](#input\_logs\_kms\_key\_arn) | KMS key ARN for logs and k8s secrets encryption | `string` | `"arn:aws:kms:us-east-1:123456789012:key/e589fe53-4af7-b084-dad1-331b80f17860"` | no |
 | <a name="input_max_size"></a> [max\_size](#input\_max\_size) | Max instances running for managed node group | `number` | `4` | no |
 | <a name="input_metrics_server"></a> [metrics\_server](#input\_metrics\_server) | Enable Metric\_server for k8s cluster. | `bool` | `false` | no |
 | <a name="input_min_size"></a> [min\_size](#input\_min\_size) | Minimun instances running for managed node group | `number` | `2` | no |
