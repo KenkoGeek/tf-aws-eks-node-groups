@@ -73,6 +73,7 @@ terraform fmt
 | [aws_ec2_tag.eks_cluster_subnet](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ec2_tag) | resource |
 | [aws_ec2_tag.internal_alb_subnet](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ec2_tag) | resource |
 | [aws_ec2_tag.karpenter_discovery_subnet](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ec2_tag) | resource |
+| [aws_ec2_tag.public_alb_subnet](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ec2_tag) | resource |
 | [aws_iam_instance_profile.karpenter](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_instance_profile) | resource |
 | [aws_iam_policy.alb_controller_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
 | [aws_iam_policy_attachment.alb_controller](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy_attachment) | resource |
@@ -91,6 +92,7 @@ terraform fmt
 | [aws_ebs_default_kms_key.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ebs_default_kms_key) | data source |
 | [aws_iam_policy_document.k8s_secrets_logs_kms_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.karpenter_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
+| [aws_subnet.public](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/subnet) | data source |
 | [aws_vpc.main](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/vpc) | data source |
 | [http_http.lbc_iam_policy](https://registry.terraform.io/providers/hashicorp/http/latest/docs/data-sources/http) | data source |
 
@@ -103,6 +105,7 @@ terraform fmt
 | <a name="input_albc_helm_chart_version"></a> [albc\_helm\_chart\_version](#input\_albc\_helm\_chart\_version) | Version of the ALB controller Helm chart, for more info -> https://artifacthub.io/packages/helm/aws/aws-load-balancer-controller | `string` | `"1.5.4"` | no |
 | <a name="input_allowed_ip_addresses"></a> [allowed\_ip\_addresses](#input\_allowed\_ip\_addresses) | Comma-separated list of allowed IP addresses (CIDR notation) for security group ingress | `string` | `"192.168.10.0/24,192.168.11.0/24"` | no |
 | <a name="input_api_gw_controller"></a> [api\_gw\_controller](#input\_api\_gw\_controller) | Enable AWS API Gatway controller. | `bool` | `false` | no |
+| <a name="input_auto_subnet_tagging"></a> [auto\_subnet\_tagging](#input\_auto\_subnet\_tagging) | Subnets tags needed for EKS cluster and ELB. | `bool` | `false` | no |
 | <a name="input_aws_region"></a> [aws\_region](#input\_aws\_region) | AWS region | `string` | `"us-east-1"` | no |
 | <a name="input_cert_manager"></a> [cert\_manager](#input\_cert\_manager) | Managing certs in k8s cluster | `bool` | `false` | no |
 | <a name="input_cloudwatch_metrics"></a> [cloudwatch\_metrics](#input\_cloudwatch\_metrics) | Enable AWS Cloudwatch Metrics. metric\_server must be true. | `bool` | `false` | no |
