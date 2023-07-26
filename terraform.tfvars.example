@@ -3,7 +3,6 @@ alb_controller_version  = "v2.5.3"
 albc_helm_chart_version = "1.5.4"
 allowed_ip_addresses    = "192.168.10.0/24,192.168.11.0/24"
 api_gw_controller       = false
-auto_subnet_tagging     = false
 aws_region              = "us-east-1"
 cert_manager            = false
 cloudwatch_metrics      = false

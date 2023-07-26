@@ -233,12 +233,6 @@ variable "enable_schedules" {
   default     = true
 }
 
-variable "auto_subnet_tagging" {
-  description = "Subnets tags needed for EKS cluster and ELB."
-  type        = bool
-  default     = false
-}
-
 variable "tz" {
   type        = string
   default     = "Etc/GMT-4"
