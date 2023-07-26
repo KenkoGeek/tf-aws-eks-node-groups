@@ -22,6 +22,13 @@ resource "aws_ec2_tag" "internal_alb_subnet" {
   value       = 1
 }
 
+resource "aws_ec2_tag" "public_alb_subnet" {
+  for_each    = toset(data.aws_subnet.public.id)
+  resource_id = each.value
+  key         = "kubernetes.io/role/elb"
+  value       = 1
+}
+
 # KMS for secrets and logs
 resource "aws_kms_key" "logs_cmk" {
   description             = "KMS key for k8s secrets and logs"
