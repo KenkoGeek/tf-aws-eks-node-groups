@@ -364,7 +364,7 @@ resource "kubectl_manifest" "karpenter_provisioner" {
         subnetSelector:
           karpenter.sh/discovery: "${module.eks.cluster_id}"
         securityGroupSelector:
-          aws-ids: "${aws_security_group.eks_sg.id}"
+          aws-ids: "${aws_security_group.eks_sg.id},${module.eks_managed_node_group["core"].node_security_group_id}"
         blockDeviceMappings:
           - deviceName: "/dev/xvda"
             ebs:
