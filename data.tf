@@ -15,11 +15,11 @@ data "aws_vpc" "main" {
 }
 
 data "aws_subnet" "public" {
- vpc_id = var.vpc_id
- filter {
-    name = "tag:Name"
+  vpc_id = var.vpc_id
+  filter {
+    name   = "tag:Name"
     values = ["*pub*"]
- }
+  }
 }
 
 data "aws_iam_policy_document" "k8s_secrets_logs_kms_policy" {
