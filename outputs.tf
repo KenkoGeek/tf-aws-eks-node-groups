@@ -32,3 +32,8 @@ output "eks_worker_sg" {
   value       = aws_security_group.eks_sg.id
   description = "EKS node group security group."
 }
+
+output "eks_worker_core_sg" {
+  value       = module.eks_managed_node_group["core"].node_security_group_id
+  description = "EKS node group core security group."
+}
