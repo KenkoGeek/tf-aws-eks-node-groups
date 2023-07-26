@@ -7,28 +7,6 @@
 #   }
 # }
 
-# Required tags
-resource "aws_ec2_tag" "karpenter_discovery_subnet" {
-  for_each    = var.auto_subnet_tagging == true ? toset(var.subnet_ids) : null
-  resource_id = each.value
-  key         = "karpenter.sh/discovery"
-  value       = module.eks.cluster_id
-}
-
-resource "aws_ec2_tag" "internal_alb_subnet" {
-  for_each    = var.auto_subnet_tagging == true ? toset(var.subnet_ids) : null
-  resource_id = each.value
-  key         = "kubernetes.io/role/internal-elb"
-  value       = 1
-}
-
-resource "aws_ec2_tag" "public_alb_subnet" {
-  for_each    = var.auto_subnet_tagging == true ? toset(data.aws_subnet.public.id) : null
-  resource_id = each.value
-  key         = "kubernetes.io/role/elb"
-  value       = 1
-}
-
 # KMS for secrets and logs
 resource "aws_kms_key" "logs_cmk" {
   description             = "KMS key for k8s secrets and logs"
@@ -308,13 +286,6 @@ resource "aws_iam_instance_profile" "karpenter" {
   role = aws_iam_role.eks_worker.name
 }
 
-resource "aws_ec2_tag" "eks_cluster_subnet" {
-  for_each    = var.auto_subnet_tagging == true ? toset(var.subnet_ids) : null
-  resource_id = each.value
-  key         = "kubernetes.io/cluster/${module.eks.cluster_id}"
-  value       = "shared"
-}
-
 module "iam_assumable_role_karpenter" {
   source                        = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
   version                       = "5.27.0"
@@ -391,7 +362,7 @@ resource "kubectl_manifest" "karpenter_provisioner" {
         tags:
           Name: "${var.project_name}-eks-additional-worker"
         subnetSelector:
-          karpenter.sh/discovery: "${module.eks.cluster_id}"
+          aws-ids: "${join(", ", var.subnet_ids)}"
         securityGroupSelector:
           aws-ids: "${aws_security_group.eks_sg.id}"
         blockDeviceMappings:
