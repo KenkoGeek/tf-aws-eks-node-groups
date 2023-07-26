@@ -362,7 +362,7 @@ resource "kubectl_manifest" "karpenter_provisioner" {
         tags:
           Name: "${var.project_name}-eks-additional-worker"
         subnetSelector:
-          aws-ids: "${join(", ", var.subnet_ids)}"
+          karpenter.sh/discovery: "${module.eks.cluster_id}"
         securityGroupSelector:
           aws-ids: "${aws_security_group.eks_sg.id}"
         blockDeviceMappings:
