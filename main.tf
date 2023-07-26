@@ -9,24 +9,21 @@
 
 # Required tags
 resource "aws_ec2_tag" "karpenter_discovery_subnet" {
-  count       = var.auto_subnet_tagging ? 1 : 0
-  for_each    = toset(var.subnet_ids)
+  for_each    = var.auto_subnet_tagging == true ? toset(var.subnet_ids) : null
   resource_id = each.value
   key         = "karpenter.sh/discovery"
   value       = module.eks.cluster_id
 }
 
 resource "aws_ec2_tag" "internal_alb_subnet" {
-  count       = var.auto_subnet_tagging ? 1 : 0
-  for_each    = toset(var.subnet_ids)
+  for_each    = var.auto_subnet_tagging == true ? toset(var.subnet_ids) : null
   resource_id = each.value
   key         = "kubernetes.io/role/internal-elb"
   value       = 1
 }
 
 resource "aws_ec2_tag" "public_alb_subnet" {
-  count       = var.auto_subnet_tagging ? 1 : 0
-  for_each    = toset(data.aws_subnet.public.id)
+  for_each    = var.auto_subnet_tagging == true ? toset(data.aws_subnet.public.id) : null
   resource_id = each.value
   key         = "kubernetes.io/role/elb"
   value       = 1
@@ -312,8 +309,7 @@ resource "aws_iam_instance_profile" "karpenter" {
 }
 
 resource "aws_ec2_tag" "eks_cluster_subnet" {
-  count       = var.auto_subnet_tagging ? 1 : 0
-  for_each    = toset(var.subnet_ids)
+  for_each    = var.auto_subnet_tagging == true ? toset(var.subnet_ids) : null
   resource_id = each.value
   key         = "kubernetes.io/cluster/${module.eks.cluster_id}"
   value       = "shared"
