@@ -170,6 +170,16 @@ module "eks" {
   cluster_tags = var.tags
 }
 
+resource "aws_security_group_rule" "worker_sg" {
+  type                     = "ingress"
+  description              = "Allow incoming connections worker extra SG"
+  from_port                = 0 - 65536
+  to_port                  = 0 - 65536
+  protocol                 = "all"
+  source_security_group_id = [aws_security_group.eks_sg.id]
+  security_group_id        = module.eks.cluster_primary_security_group_id
+}
+
 # EKS Manage node group
 module "eks_managed_node_group" {
   source  = "terraform-aws-modules/eks/aws//modules/eks-managed-node-group"
@@ -364,7 +374,7 @@ resource "kubectl_manifest" "karpenter_provisioner" {
         subnetSelector:
           karpenter.sh/discovery: "${module.eks.cluster_id}"
         securityGroupSelector:
-          aws-ids: "${aws_security_group.eks_sg.id},${module.eks_managed_node_group["core"].node_security_group_id}"
+          aws-ids: "${aws_security_group.eks_sg.id}"
         blockDeviceMappings:
           - deviceName: "/dev/xvda"
             ebs:
